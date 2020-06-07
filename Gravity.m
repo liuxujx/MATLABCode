@@ -1,45 +1,43 @@
-function [gr,gphi]  =  Gravity(state,auxdata)
-% è®¡ç®—å¼•åŠ›åŠ é€Ÿåº¦
-% è¾“å…¥çŠ¶æ€é‡ã€å‚æ•°
-% è¾“å‡ºå¼•åŠ›åŠ é€Ÿåº¦åœ¨ä½ç½®çŸ¢é‡å’Œçº¬åº¦æ–¹å‘ä¸Šçš„åˆ†é‡
-% å‚è€ƒæ–‡çŒ®ï¼šè¿œç¨‹ç«ç®­é£è¡ŒåŠ¨åŠ›å­¦ä¸åˆ¶å¯¼ï¼ŒP40-48
-gE = auxdata.gE; %åœ°çƒè¡¨é¢å¼•åŠ›åŠ é€Ÿåº¦ [m/s^2]
-GM = auxdata.GM; %å¼•åŠ›å¸¸æ•° [m^3/s^2]  
-R0 = auxdata.R0; %çƒå½¢å¼•åŠ›åœºå¹³å‡åŠå¾„ [m]
-g0 = auxdata.g0; %è¡¨é¢å¼•åŠ›åŠ é€Ÿåº¦ [m/s^2]
-a0 = auxdata.a0; %èµ¤é“å¹³å‡åŠå¾„ [m]
-J2 = auxdata.J2; %2é˜¶å¸¦è°ç³»æ•° æ— å•ä½
+function [gr, gphi] = Gravity(state,auxdata)
+% ¼ÆËãÒıÁ¦¼ÓËÙ¶È
+% ÊäÈë×´Ì¬Á¿¡¢²ÎÊı
+% Êä³öÒıÁ¦¼ÓËÙ¶ÈÔÚÎ»ÖÃÊ¸Á¿ºÍÎ³¶È·½ÏòÉÏµÄ´óĞ¡£¬·½Ïò²Î¿¼ÎÄÏ× P43 Í¼2-5
+% ²Î¿¼ÎÄÏ×£ºÔ¶³Ì»ğ¼ı·ÉĞĞ¶¯Á¦Ñ§ÓëÖÆµ¼£¬P40-48
+gE = auxdata.gE; %µØÇò±íÃæÒıÁ¦¼ÓËÙ¶È [m/s^2]
+GM = auxdata.GM; %ÒıÁ¦³£Êı [m^3/s^2]  
+R0 = auxdata.R0; %ÇòĞÎÒıÁ¦³¡Æ½¾ù°ë¾¶ [m]
+g0 = auxdata.g0; %±íÃæÒıÁ¦¼ÓËÙ¶È [m/s^2]
+a0 = auxdata.a0; %³àµÀÆ½¾ù°ë¾¶ [m]
+J2 = auxdata.J2; %2½×´øĞ³ÏµÊı ÎŞµ¥Î»
 
+scale = auxdata.scale; %ÊÇ·ñÎŞÁ¿¸Ù»¯±êÖ¾  0=ÓĞÁ¿¸Ù 1=ÎŞÁ¿¸Ù
 Rscale = auxdata.Rscale;
 Vscale = auxdata.Vscale;
 ascale = auxdata.ascale;
 tscale = auxdata.tscale;
 
-scale = auxdata.scale; %æ˜¯å¦æ— é‡çº²åŒ–æ ‡å¿—
-if scale == 0
-    r = state(1);
-    theta = state(2);
-    phi = state(3);
-    V = state(4);
-    gamma = state(5);
-    psi = state(6);
-elseif scale == 1 %è¿˜åŸä¸ºæœ‰é‡çº²å˜é‡
-    r = state(1)*Rscale;
-    theta = state(2);
-    phi = state(3);
-    V = state(4)*Vscale;
-    gamma = state(5);
-    psi = state(6);
-else
-    error('æ— é‡çº²åŒ–æ ‡å¿— scale=0 / 1');
-end
+r = state(1);
+% theta = state(2);
+phi = state(3);
+% V = state(4);
+% gamma = state(5);
+% psi = state(6);
 
-%ç†æƒ³çƒä½“å¼•åŠ›åœ¨ä½ç½®çŸ¢é‡æ–¹å‘ä¸Šçš„å¤§å°ï¼Œæ²¡æœ‰æ–¹å‘
-gr_i = GM/r^2;
-%J2é¡¹å¼•åŠ›åœ¨ä½ç½®çŸ¢é‡æ–¹å‘ä¸Šçš„å¤§å°ï¼Œæ²¡æœ‰æ–¹å‘
-gr_J2 = GM/r^2*(3/2*J2*(a0/r)^2*(1-3*sin(phi)^2));
-%J2é¡¹å¼•åŠ›åœ¨çº¬åº¦æ–¹å‘ä¸Šçš„å¤§å°ï¼Œæ²¡æœ‰æ–¹å‘
-gphi_J2 = GM/r^2*(3*J2*(a0/r)^2*sin(phi)*cos(phi));
+if scale == 0 %ÓĞÁ¿¸ÙÒıÁ¦¼ÓËÙ¶È
+    %ÀíÏëÇòÌåÒıÁ¦ÔÚÎ»ÖÃÊ¸Á¿·½ÏòÉÏµÄ´óĞ¡£¬Ã»ÓĞ·½Ïò
+    gr_i = GM/r^2;
+    %J2ÏîÒıÁ¦ÔÚÎ»ÖÃÊ¸Á¿·½ÏòÉÏµÄ´óĞ¡£¬Ã»ÓĞ·½Ïò
+    gr_J2 = GM/r^2*(3/2*J2*(a0/r)^2*(1-3*sin(phi)^2));
+    %J2ÏîÒıÁ¦ÔÚÎ³¶È·½ÏòÉÏµÄ´óĞ¡£¬Ã»ÓĞ·½Ïò
+    gphi_J2 = GM/r^2*(3*J2*(a0/r)^2*sin(phi)*cos(phi));
+elseif scale == 1 %ÎŞÁ¿¸Ù»¯ÒıÁ¦¼ÓËÙ¶È
+    %ÀíÏëÇòÌåÒıÁ¦ÔÚÎ»ÖÃÊ¸Á¿·½ÏòÉÏµÄ´óĞ¡£¬Ã»ÓĞ·½Ïò
+    gr_i = 1/r^2;
+    %J2ÏîÒıÁ¦ÔÚÎ»ÖÃÊ¸Á¿·½ÏòÉÏµÄ´óĞ¡£¬Ã»ÓĞ·½Ïò
+    gr_J2 = 1/r^2*(3/2*J2*(a0/Rscale/r)^2*(1-3*sin(phi)^2));
+    %J2ÏîÒıÁ¦ÔÚÎ³¶È·½ÏòÉÏµÄ´óĞ¡£¬Ã»ÓĞ·½Ïò
+    gphi_J2 = 1/r^2*(3*J2*(a0/Rscale/r)^2*sin(phi)*cos(phi));
+end
 
 gr = gr_i+gr_J2;
 gphi = gphi_J2;
