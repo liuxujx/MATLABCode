@@ -1,21 +1,21 @@
-function [outp]  =  Gravity(inp,const)
-% ¼ÆËãÒýÁ¦¼ÓËÙ¶È
-% ÊäÈë×´Ì¬Á¿¡¢²ÎÊý
-% Êä³öÒýÁ¦¼ÓËÙ¶ÈÔÚÎ»ÖÃÊ¸Á¿ºÍÎ³¶È·½ÏòÉÏµÄ·ÖÁ¿
-% ²Î¿¼ÎÄÏ×£ºÔ¶³Ì»ð¼ý·ÉÐÐ¶¯Á¦Ñ§ÓëÖÆµ¼£¬P40-48
-gE = const.gE; %µØÇò±íÃæÒýÁ¦¼ÓËÙ¶È [m/s^2]
-GM = const.GM; %ÒýÁ¦³£Êý [m^3/s^2]  
-R0 = const.R0; %ÇòÐÎÒýÁ¦³¡Æ½¾ù°ë¾¶ [m]
-g0 = const.g0; %±íÃæÒýÁ¦¼ÓËÙ¶È [m/s^2]
-a0 = const.a0; %³àµÀÆ½¾ù°ë¾¶ [m]
-J2 = const.J2; %2½×´øÐ³ÏµÊý ÎÞµ¥Î»
+function [outp]  =  Gravity(inp,auxdata)
+% è®¡ç®—å¼•åŠ›åŠ é€Ÿåº¦
+% è¾“å…¥çŠ¶æ€é‡ã€å‚æ•°
+% è¾“å‡ºå¼•åŠ›åŠ é€Ÿåº¦åœ¨ä½ç½®çŸ¢é‡å’Œçº¬åº¦æ–¹å‘ä¸Šçš„åˆ†é‡
+% å‚è€ƒæ–‡çŒ®ï¼šè¿œç¨‹ç«ç®­é£žè¡ŒåŠ¨åŠ›å­¦ä¸Žåˆ¶å¯¼ï¼ŒP40-48
+gE = auxdata.gE; %åœ°çƒè¡¨é¢å¼•åŠ›åŠ é€Ÿåº¦ [m/s^2]
+GM = auxdata.GM; %å¼•åŠ›å¸¸æ•° [m^3/s^2]  
+R0 = auxdata.R0; %çƒå½¢å¼•åŠ›åœºå¹³å‡åŠå¾„ [m]
+g0 = auxdata.g0; %è¡¨é¢å¼•åŠ›åŠ é€Ÿåº¦ [m/s^2]
+a0 = auxdata.a0; %èµ¤é“å¹³å‡åŠå¾„ [m]
+J2 = auxdata.J2; %2é˜¶å¸¦è°ç³»æ•° æ— å•ä½
 
-Rscale = const.Rscale;
-Vscale = const.Vscale;
-ascale = const.ascale;
-tscale = const.tscale;
+Rscale = auxdata.Rscale;
+Vscale = auxdata.Vscale;
+ascale = auxdata.ascale;
+tscale = auxdata.tscale;
 
-scale = const.scale; %ÊÇ·ñÎÞÁ¿¸Ù»¯±êÖ¾
+scale = auxdata.scale; %æ˜¯å¦æ— é‡çº²åŒ–æ ‡å¿—
 if scale == 0
     r = inp(1);
     theta = inp(2);
@@ -23,7 +23,7 @@ if scale == 0
     V = inp(4);
     gamma = inp(5);
     psi = inp(6);
-elseif scale == 1 %»¹Ô­ÎªÓÐÁ¿¸Ù±äÁ¿
+elseif scale == 1 %è¿˜åŽŸä¸ºæœ‰é‡çº²å˜é‡
     r = inp(1)*Rscale;
     theta = inp(2);
     phi = inp(3);
@@ -31,14 +31,14 @@ elseif scale == 1 %»¹Ô­ÎªÓÐÁ¿¸Ù±äÁ¿
     gamma = inp(5);
     psi = inp(6);
 else
-    error('ÎÞÁ¿¸Ù»¯±êÖ¾ scale=0 / 1');
+    error('æ— é‡çº²åŒ–æ ‡å¿— scale=0 / 1');
 end
 
-%ÀíÏëÇòÌåÒýÁ¦ÔÚÎ»ÖÃÊ¸Á¿·½ÏòÉÏµÄ´óÐ¡£¬Ã»ÓÐ·½Ïò
+%ç†æƒ³çƒä½“å¼•åŠ›åœ¨ä½ç½®çŸ¢é‡æ–¹å‘ä¸Šçš„å¤§å°ï¼Œæ²¡æœ‰æ–¹å‘
 gr_i = GM/r^2;
-%J2ÏîÒýÁ¦ÔÚÎ»ÖÃÊ¸Á¿·½ÏòÉÏµÄ´óÐ¡£¬Ã»ÓÐ·½Ïò
+%J2é¡¹å¼•åŠ›åœ¨ä½ç½®çŸ¢é‡æ–¹å‘ä¸Šçš„å¤§å°ï¼Œæ²¡æœ‰æ–¹å‘
 gr_J2 = GM/r^2*(3/2*J2*(a0/r)^2*(1-3*sin(phi)^2));
-%J2ÏîÒýÁ¦ÔÚÎ³¶È·½ÏòÉÏµÄ´óÐ¡£¬Ã»ÓÐ·½Ïò
+%J2é¡¹å¼•åŠ›åœ¨çº¬åº¦æ–¹å‘ä¸Šçš„å¤§å°ï¼Œæ²¡æœ‰æ–¹å‘
 gphi_J2 = GM/r^2*(3*J2*(a0/r)^2*sin(phi)*cos(phi));
 
 gr = gr_i+gr_J2;
