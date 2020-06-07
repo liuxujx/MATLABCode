@@ -1,4 +1,4 @@
-function [outp]  =  Gravity(inp,auxdata)
+function [gr,gphi]  =  Gravity(state,auxdata)
 % 计算引力加速度
 % 输入状态量、参数
 % 输出引力加速度在位置矢量和纬度方向上的分量
@@ -17,19 +17,19 @@ tscale = auxdata.tscale;
 
 scale = auxdata.scale; %是否无量纲化标志
 if scale == 0
-    r = inp(1);
-    theta = inp(2);
-    phi = inp(3);
-    V = inp(4);
-    gamma = inp(5);
-    psi = inp(6);
+    r = state(1);
+    theta = state(2);
+    phi = state(3);
+    V = state(4);
+    gamma = state(5);
+    psi = state(6);
 elseif scale == 1 %还原为有量纲变量
-    r = inp(1)*Rscale;
-    theta = inp(2);
-    phi = inp(3);
-    V = inp(4)*Vscale;
-    gamma = inp(5);
-    psi = inp(6);
+    r = state(1)*Rscale;
+    theta = state(2);
+    phi = state(3);
+    V = state(4)*Vscale;
+    gamma = state(5);
+    psi = state(6);
 else
     error('无量纲化标志 scale=0 / 1');
 end
@@ -44,6 +44,5 @@ gphi_J2 = GM/r^2*(3*J2*(a0/r)^2*sin(phi)*cos(phi));
 gr = gr_i+gr_J2;
 gphi = gphi_J2;
 
-outp = {gr,gphi};
 end
 
