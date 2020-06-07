@@ -2,6 +2,7 @@ function [outp]  =  Gravity(inp,const)
 % 计算引力加速度
 % 输入状态量、参数
 % 输出引力加速度在位置矢量和纬度方向上的分量
+% 参考文献：远程火箭飞行动力学与制导，P40-48
 gE = const.gE; %地球表面引力加速度 [m/s^2]
 GM = const.GM; %引力常数 [m^3/s^2]  
 R0 = const.R0; %球形引力场平均半径 [m]
